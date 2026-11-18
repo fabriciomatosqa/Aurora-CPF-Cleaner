@@ -1,0 +1,34 @@
+AURORA CPF CLEANER
+
+O que faz
+- Oculta elementos HTML com a classe .aluno-cpf.
+- Funciona em todas as páginas comuns (http e https).
+- Acompanha alterações dinâmicas da página.
+- Permite ativar/desativar pelo botão da extensão.
+- A configuração fica salva no Chrome.
+
+Instalação pelo ZIP
+1. Extraia o ZIP.
+2. Abra chrome://extensions.
+3. Ative Modo do desenvolvedor.
+4. Clique em Carregar sem compactação.
+5. Selecione a pasta extraída.
+
+CRX3 e chave de assinatura
+O GitHub Actions gera ZIP e CRX3. Para manter o mesmo ID da extensão entre versões, configure o segredo CRX_PRIVATE_KEY_B64 com a chave PEM privada codificada em Base64.
+Nunca publique a chave privada no repositório ou em Issues.
+
+Para gerar uma chave permanente em Linux/macOS:
+  openssl genrsa -out aurora-cpf-cleaner.pem 2048
+  base64 -w 0 aurora-cpf-cleaner.pem
+
+No Windows PowerShell, com OpenSSL instalado:
+  openssl genrsa -out aurora-cpf-cleaner.pem 2048
+  [Convert]::ToBase64String([IO.File]::ReadAllBytes("aurora-cpf-cleaner.pem"))
+
+Depois, no GitHub:
+Settings > Secrets and variables > Actions > New repository secret
+Nome: CRX_PRIVATE_KEY_B64
+Valor: resultado Base64 acima.
+
+Se o segredo ainda não existir, o workflow cria um CRX de teste com uma chave temporária. Esse CRX instala, mas terá outro ID em uma próxima compilação. Configure o segredo antes de distribuir/atualizar a extensão.
