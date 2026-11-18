@@ -9,17 +9,24 @@ Extensão Chrome Manifest V3 que oculta automaticamente elementos com a classe `
 - Salva a preferência no armazenamento local do Chrome.
 
 ## Baixar
-Após a execução do workflow **Build extension**, abra **Actions → Build extension → execução mais recente → Artifacts** e baixe `Aurora-CPF-Cleaner`. O ZIP contém o CRX3 e o ZIP de instalação.
+Abra **Actions → Build extension → execução mais recente → Artifacts** e baixe o artefato `Aurora-CPF-Cleaner`. Ele contém o ZIP da extensão e um CRX de compilação.
 
-## Instalação pelo ZIP
-1. Extraia `Aurora-CPF-Cleaner.zip`.
+## Instalar para testar no Chrome (recomendado)
+O Chrome pode bloquear CRX gerado fora da Chrome Web Store com o erro `CRX_REQUIRED_PROOF_MISSING`. Isso é uma regra de segurança do navegador; assinar o arquivo com uma chave própria não substitui a assinatura de distribuição exigida pelo Chrome.
+
+Para testar esta extensão:
+1. Extraia o arquivo `Aurora-CPF-Cleaner.zip`.
 2. Abra `chrome://extensions`.
 3. Ative **Modo do desenvolvedor**.
 4. Clique em **Carregar sem compactação**.
-5. Selecione a pasta extraída.
+5. Selecione a pasta extraída que contém o `manifest.json`.
 
-## CRX e chave persistente
-O workflow gera um CRX3. Para manter o mesmo ID da extensão em compilações futuras, configure o segredo de repositório `CRX_PRIVATE_KEY_B64` com a chave PEM privada codificada em Base64.
+Não tente instalar o CRX por arrastar e soltar para esse teste. O ZIP extraído é o pacote correto para **Carregar sem compactação**.
+
+## Sobre o CRX e a chave persistente
+O workflow também gera um CRX3 assinado com chave própria. Ele pode ser útil em fluxos de distribuição compatíveis, mas **não garante instalação local direta no Chrome**. Para distribuição normal a outros usuários, publique a extensão pela Chrome Web Store ou use um método de instalação gerenciado compatível com as políticas do Chrome.
+
+Para manter o mesmo ID em compilações assinadas com a mesma chave, configure o segredo de repositório `CRX_PRIVATE_KEY_B64` com a chave PEM privada codificada em Base64.
 
 Gere uma chave permanente em Linux/macOS:
 ```bash
@@ -37,4 +44,4 @@ No GitHub, abra **Settings → Secrets and variables → Actions → New reposit
 - Name: `CRX_PRIVATE_KEY_B64`
 - Secret: o texto Base64 gerado acima.
 
-Nunca faça commit da chave privada. Se o segredo ainda não existir, o workflow gera um CRX de teste com uma chave temporária; ele funciona para teste, mas terá outro ID na próxima compilação. Configure a chave persistente antes de distribuir atualizações.
+Nunca faça commit da chave privada. Sem o segredo, o workflow gera um CRX de teste com chave temporária; o ID muda na próxima compilação.
