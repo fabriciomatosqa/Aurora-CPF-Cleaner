@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aurora CPF Cleaner</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <main class="panel">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">✦</div>
+      <div>
+        <h1>Aurora</h1>
+        <p>CPF Cleaner</p>
+      </div>
+    </div>
+    <div class="status-row">
+      <div>
+        <strong>Ocultação de CPF</strong>
+        <span id="status">Carregando...</span>
+      </div>
+      <label class="switch" aria-label="Ativar ou desativar">
+        <input id="enabled" type="checkbox">
+        <span class="track"></span>
+      </label>
+    </div>
+    <p class="note">Oculta automaticamente elementos identificados como <code>.aluno-cpf</code>.</p>
+    <footer>AURORA • PRIVACIDADE NA TELA</footer>
+  </main>
+  <script src="popup.js"></script>
+</body>
+</html>
