@@ -2,27 +2,33 @@ AURORA CPF CLEANER
 
 O que faz
 - Oculta elementos HTML com a classe .aluno-cpf.
-- Funciona em todas as páginas comuns (http e https).
+- Funciona em páginas HTTP e HTTPS.
 - Acompanha alterações dinâmicas da página.
 - Permite ativar/desativar pelo botão da extensão.
-- A configuração fica salva no Chrome.
+- Salva a configuração no Chrome.
 
-Instalação pelo ZIP
-1. Extraia o ZIP.
-2. Abra chrome://extensions.
-3. Ative Modo do desenvolvedor.
-4. Clique em Carregar sem compactação.
-5. Selecione a pasta extraída.
+INSTALAÇÃO PARA TESTAR NO CHROME (RECOMENDADA)
+O Chrome pode bloquear CRX criado fora da Chrome Web Store com o erro CRX_REQUIRED_PROOF_MISSING. Uma chave própria não substitui a assinatura de distribuição exigida pelo navegador.
 
-CRX3 e chave de assinatura
-O GitHub Actions gera ZIP e CRX3. Para manter o mesmo ID da extensão entre versões, configure o segredo CRX_PRIVATE_KEY_B64 com a chave PEM privada codificada em Base64.
-Nunca publique a chave privada no repositório ou em Issues.
+1. Baixe o artefato Aurora-CPF-Cleaner na aba Actions do GitHub.
+2. Extraia o arquivo Aurora-CPF-Cleaner.zip.
+3. Abra chrome://extensions.
+4. Ative Modo do desenvolvedor.
+5. Clique em Carregar sem compactação.
+6. Selecione a pasta extraída que contém o arquivo manifest.json.
 
-Para gerar uma chave permanente em Linux/macOS:
+Para esse teste, use Carregar sem compactação. Não tente instalar o CRX por arrastar e soltar.
+
+SOBRE O CRX3
+O workflow também gera um CRX3 assinado com chave própria, mas isso não garante instalação local direta no Chrome. Para distribuição normal, publique na Chrome Web Store ou use um método gerenciado compatível com as políticas do Chrome.
+
+Para manter o mesmo ID entre compilações assinadas com a mesma chave, configure o segredo CRX_PRIVATE_KEY_B64 com uma chave PEM codificada em Base64. Nunca publique a chave privada no repositório ou em Issues.
+
+Linux/macOS:
   openssl genrsa -out aurora-cpf-cleaner.pem 2048
   base64 -w 0 aurora-cpf-cleaner.pem
 
-No Windows PowerShell, com OpenSSL instalado:
+Windows PowerShell, com OpenSSL instalado:
   openssl genrsa -out aurora-cpf-cleaner.pem 2048
   [Convert]::ToBase64String([IO.File]::ReadAllBytes("aurora-cpf-cleaner.pem"))
 
@@ -31,4 +37,4 @@ Settings > Secrets and variables > Actions > New repository secret
 Nome: CRX_PRIVATE_KEY_B64
 Valor: resultado Base64 acima.
 
-Se o segredo ainda não existir, o workflow cria um CRX de teste com uma chave temporária. Esse CRX instala, mas terá outro ID em uma próxima compilação. Configure o segredo antes de distribuir/atualizar a extensão.
+Sem esse segredo, o workflow gera um CRX de teste com chave temporária e o ID muda na próxima compilação.
