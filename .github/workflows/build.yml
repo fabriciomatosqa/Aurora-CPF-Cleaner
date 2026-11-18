@@ -1,0 +1,62 @@
+name: Build extension
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate extension
+        run: |
+          node -e "const m=require('./manifest.json'); if(m.manifest_version!==3) process.exit(1); for(const f of ['content.js','popup.html','popup.css','popup.js']) require('fs').accessSync(f); console.log('Manifest V3 válido')"
+
+      - name: Install Google Chrome
+        run: |
+          wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo apt-get update
+          sudo apt-get install -y ./google-chrome-stable_current_amd64.deb
+
+      - name: Prepare signing key
+        shell: bash
+        env:
+          CRX_PRIVATE_KEY_B64: ${{ secrets.CRX_PRIVATE_KEY_B64 }}
+        run: |
+          mkdir -p dist
+          cp manifest.json content.js popup.html popup.css popup.js dist/
+          if [ -n "$CRX_PRIVATE_KEY_B64" ]; then
+            printf '%s' "$CRX_PRIVATE_KEY_B64" | base64 --decode > signing-key.pem
+            echo "Using persistent repository signing key."
+          else
+            openssl genrsa -out signing-key.pem 2048
+            echo "::warning::CRX gerado com chave temporária. Configure CRX_PRIVATE_KEY_B64 para preservar o ID entre versões."
+          fi
+
+      - name: Pack CRX3
+        run: |
+          google-chrome --headless --no-sandbox --disable-gpu --pack-extension="$PWD/dist" --pack-extension-key="$PWD/signing-key.pem"
+          mv dist.crx Aurora-CPF-Cleaner.crx
+
+      - name: Create ZIP
+        run: |
+          cd dist
+          zip -r ../Aurora-CPF-Cleaner.zip .
+
+      - name: Upload packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: Aurora-CPF-Cleaner
+          path: |
+            Aurora-CPF-Cleaner.crx
+            Aurora-CPF-Cleaner.zip
+          if-no-files-found: error
+          retention-days: 30
